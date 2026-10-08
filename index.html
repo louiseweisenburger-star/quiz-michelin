@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz MICHELIN</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f5f5f5;
+    margin:0;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:20px;
+    box-shadow:0 2px 5px rgba(0,0,0,.1);
+}
+
+h1{
+    color:#0055A4;
+}
+
+button{
+    background:#0055A4;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#003f7d;
+}
+
+label{
+    display:block;
+    margin:8px 0;
+}
+
+input[type=text]{
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+}
+
+.hidden{
+    display:none;
+}
+
+.result{
+    text-align:center;
+    font-size:24px;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card" id="intro">
+
+<h1>Quiz MICHELIN</h1>
+
+<p>Merci de renseigner vos informations avant de commencer.</p>
+
+<label>Nom
+<input type="text" id="nom">
+</label>
+
+<label>Prénom
+<input type="text" id="prenom">
+</label>
+
+<label>Raison Sociale
+<input type="text" id="societe">
+</label>
+
+<br>
+
+<button onclick="demarrerQuiz()">
+Commencer le Quiz
+</button>
+
+</div>
+
+<div id="quiz" class="hidden"></div>
+
+<div id="resultat" class="card hidden"></div>
+
+</div>
+
+<script>
+
+const questions=[
+
+{
+question:"1. Où est née l'entreprise Michelin ?",
+choices:["Clermont-Ferrand","Lyon","Lille","Bordeaux"],
+correct:["Clermont-Ferrand"]
+},
+
+{
+question:"2. Quelle innovation Michelin a-t-il popularisée en 1946 ?",
+choices:["Le pneu radial","Le pneu plein","Le pneu à chambre renforcée","Le pneu à double bande de roulement"],
+correct:["Le pneu radial"]
+},
+
+{
+question:"3. Quelle phrase met le mieux en avant les performances des pneumatiques MICHELIN ?",
+choices:[
+"Les pneus Michelin sont conçus pour offrir le meilleur ensemble de performances, du premier au dernier kilomètre.",
+"Les pneus Michelin sont principalement développés pour maximiser la vitesse de pointe.",
+"Les pneus Michelin privilégient uniquement la durée de vie au détriment des autres performances.",
+"Les pneus Michelin sont optimisés exclusivement pour les conditions estivales."
+],
+correct:[
+"Les pneus Michelin sont conçus pour offrir le meilleur ensemble de performances, du premier au dernier kilomètre."
+]
+},
+
+{
+question:"4. Quelle est la durée de vie kilométrique du pneu MICHELIN CrossClimate 3 par rapport au MICHELIN CrossClimate 2 ?",
+choices:["Équivalente","5 % de plus","10 % de plus","15 % de plus"],
+correct:["15 % de plus"]
+},
+
+{
+question:"5. De quel taux le MICHELIN Primacy 5 améliore-t-il la distance de freinage sur sol mouillé ?",
+choices:["2 %","4 %","6 %","8 %"],
+correct:["4 %"]
+},
+
+{
+question:"6. De combien le nouveau pneu MICHELIN Primacy 5 réduit-il la résistance au roulement ?",
+choices:["3 %","4 %","5 %","6 %"],
+correct:["5 %"]
+},
+
+{
+question:"7. Quelle est la profondeur légale minimale de gomme d'un pneumatique poids lourd en France ?",
+choices:["1 mm","1,6 mm","2 mm","3 mm"],
+correct:["1 mm"]
+},
+
+{
+question:"8. Quel est le nouveau profil MICHELIN du pneu de semi-remorque en dimension 385/65 R22.5 ?",
+choices:["X Multi T","X Multi T+","X Multi T2","X Line Energy T"],
+correct:["X Multi T2"]
+},
+
+{
+question:"9. D'après vous, qu'est-ce qui tient la charge dans un ensemble monté ?",
+choices:["Le flanc","La jante","L’essieu","L’air"],
+correct:["L’air"]
+},
+
+{
+question:"10. Que veut dire la norme VF ?",
+choices:[
+"Very High Flexion",
+"Verified Flexion",
+"Vulcanisation française",
+"Version française"
+],
+correct:["Very High Flexion"]
+}
+
+];
+
+function demarrerQuiz(){
+
+const nom=document.getElementById("nom").value.trim();
+const prenom=document.getElementById("prenom").value.trim();
+const societe=document.getElementById("societe").value.trim();
+
+if(!nom || !prenom || !societe){
+alert("Merci de renseigner tous les champs.");
+return;
+}
+
+document.getElementById("intro").classList.add("hidden");
+
+const quiz=document.getElementById("quiz");
+quiz.classList.remove("hidden");
+
+questions.forEach((q,index)=>{
+
+let html=`<div class="card">
+<h3>${q.question}</h3>`;
+
+q.choices.forEach(choice=>{
+
+html+=`
+<label>
+<input type="radio" name="q${index}" value="${choice}">
+${choice}
+</label>
+`;
+
+});
+
+html+=`</div>`;
+
+quiz.innerHTML+=html;
+
+});
+
+quiz.innerHTML+=`
+<button onclick="calculerScore()">
+Terminer le Quiz
+</button>
+`;
+
+}
+
+function calculerScore(){
+
+let score=0;
+
+questions.forEach((q,index)=>{
+
+const selected=document.querySelector(
+'input[name="q'+index+'"\]:checked'
+);
+
+if(selected){
+
+if(selected.value===q.correct[0]){
+score++;
+}
+
+}
+
+});
+
+document.getElementById("quiz").classList.add("hidden");
+
+document.getElementById("resultat").classList.remove("hidden");
+
+const prenom=document.getElementById("prenom").value;
+const nom=document.getElementById("nom").value;
+const societe=document.getElementById("societe").value;
+
+document.getElementById("resultat").innerHTML=`
+<h1>Résultat</h1>
+
+<p><strong>${prenom} ${nom}</strong></p>
+
+<p>${societe}</p>
+
+<div class="result">
+Score : ${score} / ${questions.length}
+</div>
+
+<p>
+Merci de votre participation !
+</p>
+`;
+
+}
+
+</script>
+
+</body>
+</html>
